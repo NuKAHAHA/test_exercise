@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  subscription-service:
+    build: .
+    container_name: subscription-service
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_SSLMODE=disable
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: subscription-db
+    restart: always
+    environment:
+      POSTGRES_USER: test_exercise
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: test
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  migrate:
+    image: migrate/migrate
+    container_name: db-migrate
+    depends_on:
+      - postgres
+    restart: on-failure
+    volumes:
+      - ./migrations:/migrations
+    entrypoint: >
+      sh -c "sleep 5 &&
+             migrate -path=/migrations -database=postgres://test_exercise:secret@postgres:5432/test?sslmode=disable up"
+    networks:
+      - backend
+
+volumes:
+  postgres-data:
+
+networks:
+  backend:
+    driver: bridge
