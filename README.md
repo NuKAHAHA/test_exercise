@@ -21,8 +21,8 @@ The **Subscription Service** is a RESTful API that allows managing user subscrip
 
 ## Requirements
 
-- Go 1.20+
-- PostgreSQL 13+
+- Go 1.24+
+- PostgreSQL 17+
 - Docker & Docker Compose (for containerized environment)
 
 ## Getting Started
@@ -39,10 +39,11 @@ cd subscription-service
 Create a `.env` file with the following:
 
 ```env
-DB_USER=your_user
-DB_PASSWORD=your_password
-DB_NAME=subscription_db
-SERVER_PORT=8000
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=test
+DB_USER=test_exercise
+DB_PASSWORD=secret
 ```
 
 ### 3. Run with Docker
