@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"awesomeProject1/internal/model"
 	"context"
 	"fmt"
 	"log/slog"
@@ -9,6 +8,8 @@ import (
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+
+	"awesomeProject1/internal/model"
 )
 
 type SubscriptionRepository struct {

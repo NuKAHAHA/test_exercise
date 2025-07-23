@@ -14,7 +14,3 @@ type Subscription struct {
 	StartDate   time.Time  `gorm:"not null" json:"start_date"`
 	EndDate     *time.Time `gorm:"index" json:"end_date,omitempty"`
 }
-
-func (Subscription) TableName() string {
-	return "subscriptions"
-}

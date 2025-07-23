@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"awesomeProject1/internal/service"
+	"context"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -10,14 +10,25 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+
+	"awesomeProject1/internal/model"
 )
 
 type SubscriptionHandler struct {
-	service *service.SubscriptionService
+	service SubscriptionService
 	logger  *slog.Logger
 }
 
-func NewSubscriptionHandler(service *service.SubscriptionService, logger *slog.Logger) *SubscriptionHandler {
+type SubscriptionService interface {
+	Create(ctx context.Context, serviceName string, price int, userID uuid.UUID, startDateStr string, endDateStr string) (*models.Subscription, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*models.Subscription, error)
+	Update(ctx context.Context, id uuid.UUID, serviceName string, price int, startDateStr string, endDateStr string) (*models.Subscription, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+	List(ctx context.Context, userID uuid.UUID, serviceName string) ([]models.Subscription, error)
+	Aggregate(ctx context.Context, startDateStr string, endDateStr string, userID *uuid.UUID, serviceName *string) (int, error)
+}
+
+func NewSubscriptionHandler(service SubscriptionService, logger *slog.Logger) *SubscriptionHandler {
 	return &SubscriptionHandler{
 		service: service,
 		logger:  logger,

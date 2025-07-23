@@ -1,8 +1,6 @@
 package service
 
 import (
-	"awesomeProject1/internal/model"
-	"awesomeProject1/internal/repository"
 	"context"
 	"errors"
 	"fmt"
@@ -10,14 +8,25 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
+	"awesomeProject1/internal/model"
 )
 
 type SubscriptionService struct {
-	repo   *repository.SubscriptionRepository
+	repo   repositorySubscription
 	logger *slog.Logger
 }
 
-func NewSubscriptionService(repo *repository.SubscriptionRepository, logger *slog.Logger) *SubscriptionService {
+type repositorySubscription interface {
+	Create(ctx context.Context, sub *models.Subscription) error
+	GetByID(ctx context.Context, id uuid.UUID) (*models.Subscription, error)
+	Update(ctx context.Context, sub *models.Subscription) error
+	Delete(ctx context.Context, id uuid.UUID) error
+	List(ctx context.Context, userID uuid.UUID, serviceName string) ([]models.Subscription, error)
+	Aggregate(ctx context.Context, start time.Time, end time.Time, userID *uuid.UUID, serviceName *string) (int, error)
+}
+
+func NewSubscriptionService(repo repositorySubscription, logger *slog.Logger) *SubscriptionService {
 	return &SubscriptionService{
 		repo:   repo,
 		logger: logger,
